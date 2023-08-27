@@ -11,7 +11,8 @@ hostName = "localhost"
 serverPort = 8080
 
 options = webdriver.FirefoxOptions()
-driver = webdriver.Firefox() 
+options.add_argument("--headless")
+driver = webdriver.Firefox(options=options) 
 driver.install_addon("./bibbotmod.xpi")
 driver.install_addon("./cookies.xpi")
 
