@@ -7,6 +7,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 from urllib.parse import urlparse, parse_qs
+import requests
 
 hostName = "localhost"
 serverPort = 8281
@@ -96,6 +97,18 @@ class MyServer(BaseHTTPRequestHandler):
 
         if self.path.startswith("/get") and url is not None:
             print("Checking...", url)
+
+            try:
+                r = requests.head(url)
+                print(r.status_code)
+                if r.status_code == 302:
+                    url = r.headers.get('location')
+                    print("Following redirect", url)
+                    
+            except requests.ConnectionError:
+                self.error("URL is down.")
+                return
+
             if not url.startswith(tuple(sites)):
                 self.error("BibBot does not support this page yet :/")
                 return
